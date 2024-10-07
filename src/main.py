@@ -14,6 +14,7 @@ def extract_text_from_pdf(pdf_path):
 
 def find_holidays(text):
     holidays = []
+    sundays = []
     
     # Keywords for holidays (you can extend this list)
     holiday_keywords = ['Onam', 'Independence Day', 'Mahanavami', 'Vijayadasami', 'Christmas', 'New Year']
@@ -26,12 +27,15 @@ def find_holidays(text):
     # Find all Sundays (they are always holidays)
     # Example pattern: "Sun 7" or "Sunday 7" for date format in the PDF
     sunday_pattern = r'\bSun\b \d{1,2}'
-    sundays = re.findall(sunday_pattern, text)
+    sundays_found = re.findall(sunday_pattern, text)
     
-    # Add Sundays to the holiday list
-    holidays.extend(sundays)
+    # Add Sundays to a separate list
+    sundays.extend(sundays_found)
     
-    return holidays
+    # Remove duplicates (if any)
+    sundays = list(set(sundays))
+    
+    return holidays, sundays
 
 if __name__ == "__main__":
     # Provide the path to your PDF file
@@ -41,7 +45,8 @@ if __name__ == "__main__":
     text = extract_text_from_pdf(pdf_path)
     
     # Find holidays in the extracted text
-    holidays = find_holidays(text)
+    holidays, sundays = find_holidays(text)
     
     # Print the holidays
-    print("Holidays found in the PDF:", holidays)
+    print("Specific Holidays found in the PDF:", holidays)
+    print("Sundays (holidays) found in the PDF:", sundays)
